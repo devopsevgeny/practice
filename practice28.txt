@@ -1,0 +1,71 @@
+Create a user account named serena, including a home directory and a description (or
+comment) that reads Serena Williams. Do all this in one single command.
+sudo useradd -m -c "Serena Wiliams" serena
+
+2. Create a user named venus, including home directory, bash shell, a description that reads
+Venus Williams all in one single command.
+sudo useradd -m -c "Venus Wiliams" venus -s /bin/bash
+
+3. Verify that both users have correct entries in /etc/passwd, /etc/shadow and /etc/group.
+ jeka-VirtualBox  jeka  ~  1  tail -2 /etc/passwd
+serena:x:1002:1002:Serena Wiliams:/home/serena:/bin/sh
+venus:x:1003:1003:Venus Wiliams:/home/venus:/bin/bash
+  jeka-VirtualBox  jeka  ~  1  sudo tail -2  /etc/shadow
+serena:!:20143:0:99999:7:::
+venus:!:20143:0:99999:7:::
+  jeka-VirtualBox  jeka  ~  sudo tail -2 /etc/group
+serena:x:1002:
+venus:x:1003:
+
+
+4. Verify that their home directory was created.
+sudo ls -/home
+  jeka-VirtualBox  jeka  ~  1  sudo ls -la  /home
+total 24
+drwxr-xr-x  6 root   root   4096 Feb 24 22:30 .
+drwxr-xr-x 23 root   root   4096 Feb  3 23:20 ..
+drwxr-x--- 31 jeka   jeka   4096 Feb 24 22:24 jeka
+drwxr-x---  4 serena serena 4096 Feb 24 22:29 serena
+drwxr-x---  5 tania  tania  4096 Feb 24 22:05 tania
+drwxr-x---  4 venus  venus  4096 Feb 24 22:30 venus
+
+5. Create a user named einstime with /bin/date as his default logon shell.
+sudo useradd einstime -m -s /bin/date 
+7. What happens when you log on with the einstime user ? Can you think of a useful real
+ su - einstime
+Password:
+Mon 24 Feb 2025 22:36:11 IST
+Security reasons ,system accounts which shoud not do login ? 
+
+world example for changing a user's login shell to an application ?
+sudo chsh einstime -s /bin/bash
+
+8. Create a file named welcome.txt and make sure every new user will see this file in their
+home directory.
+su - ; cd /etc/skel ; touch wellcome.txt ; echo "Wellcome" > wellcome.txt 
+9. Verify this setup by creating (and deleting) a test user account.
+root@jeka-VirtualBox:/etc/skel# useradd -m kolia -s /bin/bash
+root@jeka-VirtualBox:/etc/skel# cd /home/kolia/
+root@jeka-VirtualBox:/home/kolia# ll
+total 44
+drwxr-x--- 4 kolia kolia 4096 Feb 24 22:44 ./
+drwxr-xr-x 8 root  root  4096 Feb 24 22:44 ../
+-rw-r--r-- 1 kolia kolia  220 Mar 31  2024 .bash_logout
+-rw-r--r-- 1 kolia kolia 3771 Mar 31  2024 .bashrc
+drwxr-xr-x 3 kolia kolia 4096 Jan 10 18:16 .config/
+-rw-r--r-- 1 kolia kolia   22 Sep  8  2011 .gtkrc-2.0
+-rw-r--r-- 1 kolia kolia  516 Dec 17  2013 .gtkrc-xfce
+-rw-r--r-- 1 kolia kolia 2078 Jan 13  2024 .kshrc
+drwxr-xr-x 3 kolia kolia 4096 Jan 10 18:16 .local/
+-rw-r--r-- 1 kolia kolia  807 Mar 31  2024 .profile
+-rw-r--r-- 1 kolia kolia   22 Feb 24 22:41 wellcome.txt
+
+10. Change the default login shell for the serena user to /bin/bash. Verify before and after
+you make this change.
+
+root@jeka-VirtualBox:/home/kolia# cat /etc/passwd | grep serena
+serena:x:1002:1002:Serena Wiliams:/home/serena:/bin/sh
+root@jeka-VirtualBox:/home/kolia# chsh serena -s /bin/bash
+root@jeka-VirtualBox:/home/kolia# cat /etc/passwd | grep serena
+serena:x:1002:1002:Serena Wiliams:/home/serena:/bin/bash
+

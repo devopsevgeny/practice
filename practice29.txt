@@ -1,0 +1,84 @@
+1. Set the password for serena to hunter2.
+ sudo bash -c 'echo "serena:hunter2" | chpasswd'
+or sudo passwd serena
+
+2. Also set a password for venus and then lock the venus user account with usermod. Verify
+the locking in /etc/shadow before and after you lock it.
+  jeka-VirtualBox  jeka  ~  CLASS  sudo bash -c 'echo "venus:hunter2" | chpasswd'
+sudo cat /etc/shadow | grep venus
+venus:!$y$j9T$Noof6VzOioLvCB0l/9Mpm.$Fsp39xPc6kXz3oYXKfxZzWvFeGCiVn1EeODgU8jee/9:20143:0:99999:7:::
+
+After lock appeas !before the password
+
+3. Use passw -d to disable the serena password. Verify the serena line in /etc/shadow
+ before and after disabling.
+
+  jeka-VirtualBox  jeka  ~  CLASS  sudo bash -c 'echo "serena:hunter2" | chpasswd'
+  jeka-VirtualBox  jeka  ~  CLASS  sudo cat /etc/shadow | grep serena
+serena:$y$j9T$diPHgUUZUU5VGb..twlhx.$QEqtNCCdIeLbgInyCgEkqzxwcvDfOq7jJB23G1UrSs1:20143:0:99999:7:::
+  jeka-VirtualBox  jeka  ~  CLASS  sudo passwd -d serena
+passwd: password changed.
+  jeka-VirtualBox  jeka  ~  CLASS  sudo cat /etc/shadow | grep serena
+serena::20143:0:99999:7:::
+
+
+4. What is the difference between locking a user account and disabling a user account's
+password like we just did with usermod -L and passwd -d?
+
+Looks like locking user account will delete the password ,whwn lock only adds !
+
+5. Try changing the password of serena to serena as serena.
+su - serena, I was able to login with user that has sudo permission without any password.
+and I was able to change password as serena 
+
+6. Make sure serena has to change her password in 10 days.
+chage -M 10 serena
+
+7. Make sure every new user needs to change their password every 10 days
+PASS_MAX_DAYS   99999 shoud ne changed to PASS_MAX_DAYS  10.
+
+8. Take a backup as root of /etc/shadow. Use vi to copy an encrypted hunter2 hash from
+venus to serena. Can serena now log on with hunter2 as a password ?
+yes
+9. Why use vipw instead of vi ? What could be the problem when using vi or vim ?
+Special tools for editing passwd / shadow datanase  
+10. Use chsh to list all shells (only works on RHEL/CentOS/Fedora), and compare to cat /
+etc/shells.
+ chsh -s /
+/bin/bash        /bin/rbash       /bin/sh          /usr/bin/bash    /usr/bin/ksh93   /usr/bin/rksh93  /usr/bin/sh      /usr/bin/zsh
+/bin/ksh93       /bin/rksh93      /bin/zsh         /usr/bin/dash    /usr/bin/rbash   /usr/bin/screen  /usr/bin/tmux
+
+with tab worked as well in Linux mint 
+ cat /etc/shells
+# /etc/shells: valid login shells
+/bin/sh
+/usr/bin/sh
+/bin/bash
+/usr/bin/bash
+/bin/rbash
+/usr/bin/rbash
+/usr/bin/dash
+/usr/bin/screen
+/usr/bin/tmux
+/bin/zsh
+/usr/bin/zsh
+/usr/bin/zsh
+/bin/ksh93
+/usr/bin/ksh93
+/bin/rksh93
+/usr/bin/rksh93
+
+11. Which useradd option allows you to name a home directory ?
+useradd -m 
+
+12. How can you see whether the password of user serena is locked or unlocked ? Give a
+solution with grep and a solution with passwd.
+-S, --status
+Display account status information. 
+The status information consists of 7 fields. The first field is the user's login name. 
+The second field indicates if the user account has
+a locked password (L), has no password (NP), or has a usable password (P). 
+The third field gives the date of the last password change. The next four fields are the minimum
+age, maximum age, warning period, and inactivity period for the password. These ages are expressed in days.
+
+sudo cat /etc/shadow | grep user
